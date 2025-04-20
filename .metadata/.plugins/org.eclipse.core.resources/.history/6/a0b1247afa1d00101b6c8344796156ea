@@ -1,0 +1,5 @@
+package ma.isga.depot.entities;
+
+public class Usager {
+
+}

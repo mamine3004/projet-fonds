@@ -1,0 +1,55 @@
+package ma.isga.depot.entities;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "groupes")
+public class Groupe {
+
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+	private long id;
+
+
+	private String nom;
+
+
+	public Groupe(String nom) {
+		super();
+		this.nom = nom;
+	}
+
+
+	public Groupe() {
+		super();
+	}
+
+
+	public long getId() {
+		return id;
+	}
+
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+
+	public String getNom() {
+		return nom;
+	}
+
+
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+	
+	
+}

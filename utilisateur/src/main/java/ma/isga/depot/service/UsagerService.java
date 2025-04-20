@@ -1,0 +1,62 @@
+package ma.isga.depot.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import ma.isga.depot.entities.Usager;
+import ma.isga.depot.repository.UsagerRepository;
+
+@Service
+public class UsagerService implements IUsagerService{
+
+	private UsagerRepository  usagerRepository;
+	
+	public UsagerService(UsagerRepository usagerRepository) {
+		this.usagerRepository = usagerRepository;
+	}
+
+	@Override
+	public List<Usager> getAllUsagers() {
+		// TODO Auto-generated method stub
+		return usagerRepository.findAll();
+	}
+
+	@Override
+	public Optional<Usager> getUsagerById(Long id) {
+		// TODO Auto-generated method stub
+		return usagerRepository.findById(id);
+	}
+
+	@Override
+	public Optional<Usager> getUsagerByLogin(String login) {
+		// TODO Auto-generated method stub
+		return usagerRepository.findByLogin(login);
+	}
+
+	@Override
+	public Usager saveUsager(Usager usager) {
+		// TODO Auto-generated method stub
+		return usagerRepository.save(usager);
+	}
+
+	@Override
+	public void deleteUsager(Long id) {
+		// TODO Auto-generated method stub
+		usagerRepository.deleteById(id);
+	}
+
+	@Override
+	public boolean authenticate(String login, String password) {
+		// TODO Auto-generated method stub
+        Optional<Usager> usager = usagerRepository.findByLoginAndPassword(login,password);
+        
+        if (usager.isPresent()) {
+            return true;
+        }
+
+		return false;
+	}
+
+}

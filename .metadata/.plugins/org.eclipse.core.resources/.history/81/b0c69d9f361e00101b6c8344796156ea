@@ -1,0 +1,137 @@
+package ma.isga.depot.service;
+
+import org.springframework.stereotype.Service;
+
+import ma.isga.depot.entities.Catalogue;
+import ma.isga.depot.entities.Operation;
+import ma.isga.depot.feign.UsagerRestController;
+import ma.isga.depot.repository.OperationRepository;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class OperationService {
+
+    private OperationRepository operationRepository;
+    private FondService fondService;
+    private UsagerRestController usagerRestController;
+
+    
+
+	public OperationService(OperationRepository operationRepository, FondService fondService,
+			UsagerRestController usagerRestController) {
+		super();
+		this.operationRepository = operationRepository;
+		this.fondService = fondService;
+		this.usagerRestController = usagerRestController;
+	}
+
+	public List<Operation> getAllOperations() {
+        return operationRepository.findAll();
+    }
+
+    public Optional<Operation> getOperationById(Long id) {
+        return operationRepository.findById(id);
+    }
+
+    public List<Operation> getOperationsByUsager(Long usagerId) {
+        return operationRepository.findByUsagerId(usagerId);
+    }
+
+    public List<Operation> getOperationsByOuvrage(Catalogue ouvrage) {
+        return operationRepository.findByOuvrage(ouvrage);
+    }
+
+    public List<Operation> getOperationsActivesByOuvrage(Catalogue ouvrage) {
+        return operationRepository.findByOuvrageAndActifTrue(ouvrage);
+    }
+
+    public List<Operation> getOperationsActivesByUsager(Long usagerId) {
+        return operationRepository.findByUsagerIdAndActifTrue(usagerId);
+    }
+
+    public Operation saveOperation(Operation operation) {
+        return operationRepository.save(operation);
+    }
+
+    public void deleteOperation(Long id) {
+        operationRepository.deleteById(id);
+    }
+
+    public Operation emprunterOuvrage(Long usagerId, Catalogue ouvrage) {
+        // Vérifier la disponibilité de l'ouvrage
+    	
+        if (fondService.isOuvrageDisponible(ouvrage)) {
+            // Décrémenter le nombre d'exemplaires disponibles
+            fondService.decrementerExemplaires(ouvrage);
+            
+            // Créer une opération d'emprunt
+            Operation operation = new Operation();
+            operation.setUsagerId(usagerId);
+            operation.setOuvrage(ouvrage);
+            operation.setType(Operation.TypeOperation.EMPRUNT);
+            operation.setDateDebut(LocalDate.now());
+            operation.setDateFin(LocalDate.now().plusDays(8)); // 8 jours d'emprunt
+            operation.setActif(true);
+            
+            return operationRepository.save(operation);
+        }
+        
+        return null;
+    }
+
+    public Operation reserverOuvrage(Long usagerId, Catalogue ouvrage) {
+        // Créer une opération de réservation
+    	
+        Operation operation = new Operation();
+        operation.setUsagerId(usagerId);
+        operation.setOuvrage(ouvrage);
+        operation.setType(Operation.TypeOperation.RESERVATION);
+        operation.setDateDebut(LocalDate.now());
+        operation.setDateFin(LocalDate.now().plusDays(8)); // 8 jours de réservation
+        operation.setActif(true);
+        
+        return operationRepository.save(operation);
+    }
+
+    public boolean retournerOuvrage(Long operationId) {
+        Optional<Operation> operationOpt = operationRepository.findById(operationId);
+        
+        if (operationOpt.isPresent()) {
+            Operation operation = operationOpt.get();
+            
+            if (operation.getType() == Operation.TypeOperation.EMPRUNT && operation.getActif()) {
+                // Marquer l'opération comme inactive
+                operation.setActif(false);
+                operationRepository.save(operation);
+                
+                // Incrémenter le nombre d'exemplaires disponibles
+                fondService.incrementerExemplaires(operation.getOuvrage());
+                
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    public boolean annulerReservation(Long operationId) {
+        Optional<Operation> operationOpt = operationRepository.findById(operationId);
+        
+        if (operationOpt.isPresent()) {
+            Operation operation = operationOpt.get();
+            
+            if (operation.getType() == Operation.TypeOperation.RESERVATION && operation.getActif()) {
+                // Marquer l'opération comme inactive
+                operation.setActif(false);
+                operationRepository.save(operation);
+                
+                return true;
+            }
+        }
+        
+        return false;
+    }
+} 

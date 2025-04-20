@@ -1,0 +1,5 @@
+package ma.isga.depot.api;
+
+public class AuthConcroller {
+
+}

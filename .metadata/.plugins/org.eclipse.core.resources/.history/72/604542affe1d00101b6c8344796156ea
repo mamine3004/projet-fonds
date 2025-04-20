@@ -1,0 +1,5 @@
+package ma.isga.depot.repository;
+
+public interface UsagerRepository {
+
+}

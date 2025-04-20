@@ -1,0 +1,11 @@
+package ma.isga.depot.service;
+
+import ma.isga.depot.entities.Groupe;
+
+public interface IGroupeService {
+	Groupe saveGroupe(Groupe pr);
+	Groupe getGroupe(Long id);
+	List<Groupe>  getGroupes();
+
+
+}

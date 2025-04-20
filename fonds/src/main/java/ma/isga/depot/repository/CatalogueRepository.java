@@ -1,0 +1,11 @@
+package ma.isga.depot.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+import ma.isga.depot.entities.Catalogue;
+@Repository
+public interface CatalogueRepository extends JpaRepository<Catalogue, Long> {
+    Optional<Catalogue> findByIsbn(String isbn);
+} 

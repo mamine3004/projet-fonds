@@ -1,0 +1,18 @@
+package ma.isga.depot.entities;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "membres")
+public class Membre {
+
+
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	private String login;
+	@ManyToOne(cascade = CascadeType.ALL)
+	private String password;	
+}

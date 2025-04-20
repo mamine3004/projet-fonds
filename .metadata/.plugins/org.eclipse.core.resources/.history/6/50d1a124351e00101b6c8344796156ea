@@ -1,0 +1,60 @@
+package ma.isga.depot.api;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import ma.isga.depot.entities.Usager;
+import ma.isga.depot.service.IUsagerService;
+
+@RestController
+@RequestMapping("/usagers")
+public class UsagerController {
+
+    private  IUsagerService usagerService;
+
+    @GetMapping
+    public ResponseEntity<List<Usager>> getAllUsagers() {
+        return ResponseEntity.ok(usagerService.getAllUsagers());
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Usager> getUsagerById(@PathVariable Long id) {
+        return usagerService.getUsagerById(id);
+    }
+
+    @PostMapping
+    public ResponseEntity<Usager> createUsager(@RequestBody Usager usager) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(usagerService.saveUsager(usager));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Usager> updateUsager(@PathVariable Long id, @RequestBody Usager usager) {
+        return usagerService.getUsagerById(id)
+                .map(existingUsager -> {
+                    usager.setId(id);
+                    return ResponseEntity.ok(usagerService.saveUsager(usager));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUsager(@PathVariable Long id) {
+        usagerService.deleteUsager(id);
+        return ResponseEntity.noContent().build();
+    }
+    
+
+}

@@ -1,0 +1,5 @@
+package ma.isga.depot.service;
+
+public interface IUsagerService {
+
+}

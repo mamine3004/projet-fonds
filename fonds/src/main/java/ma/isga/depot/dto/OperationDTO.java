@@ -3,5 +3,5 @@ package ma.isga.depot.dto;
 public class OperationDTO {
 
 	public Long usagerId;
-	public Long ouvrageId;
+	public String ouvrageId;
 }

@@ -26,12 +26,12 @@ public class CatalogueController {
         return ResponseEntity.ok(catalogueService.getAllOuvrages());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Catalogue> getOuvrageById(@PathVariable Long id) {
-        return catalogueService.getOuvrageById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Catalogue> getOuvrageById(@PathVariable Long id) {
+//        return catalogueService.getOuvrageById(id)
+//                .map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.notFound().build());
+//    }
 
     @GetMapping("/isbn/{isbn}")
     public ResponseEntity<Catalogue> getOuvrageByIsbn(@PathVariable String isbn) {
@@ -46,19 +46,19 @@ public class CatalogueController {
                 .body(catalogueService.saveOuvrage(catalogue));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Catalogue> updateOuvrage(@PathVariable Long id, @RequestBody Catalogue catalogue) {
-        return catalogueService.getOuvrageById(id)
+    @PutMapping("/{isbn}")
+    public ResponseEntity<Catalogue> updateOuvrage(@PathVariable String isbn, @RequestBody Catalogue catalogue) {
+        return catalogueService.getOuvrageByIsbn(isbn)
                 .map(existingOuvrage -> {
-                    catalogue.setId(id);
+                    catalogue.setIsbn(isbn);
                     return ResponseEntity.ok(catalogueService.saveOuvrage(catalogue));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOuvrage(@PathVariable Long id) {
-        catalogueService.deleteOuvrage(id);
+    @DeleteMapping("/{isbn}")
+    public ResponseEntity<Void> deleteOuvrage(@PathVariable String isbn) {
+        catalogueService.deleteOuvrage(isbn);
         return ResponseEntity.noContent().build();
     }
 } 

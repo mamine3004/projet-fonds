@@ -1,6 +1,7 @@
 package ma.isga.depot.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import ma.isga.depot.entities.Catalogue;
 import ma.isga.depot.repository.CatalogueRepository;
@@ -22,9 +23,9 @@ public class CatalogueService {
         return catalogueRepository.findAll();
     }
 
-    public Optional<Catalogue> getOuvrageById(Long id) {
-        return catalogueRepository.findById(id);
-    }
+//    public Optional<Catalogue> getOuvrageById(Long id) {
+//        return catalogueRepository.findById(id);
+//    }
 
     public Optional<Catalogue> getOuvrageByIsbn(String isbn) {
         return catalogueRepository.findByIsbn(isbn);
@@ -33,8 +34,8 @@ public class CatalogueService {
     public Catalogue saveOuvrage(Catalogue catalogue) {
         return catalogueRepository.save(catalogue);
     }
-
-    public void deleteOuvrage(Long id) {
-        catalogueRepository.deleteById(id);
+    @Transactional
+    public void deleteOuvrage(String id) {
+        catalogueRepository.deleteByIsbn(id);;
     }
 } 

@@ -1,0 +1,64 @@
+package ma.isga.depot.api;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import ma.isga.depot.entities.Catalogue;
+import ma.isga.depot.service.CatalogueService;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/catalogue")
+public class CatalogueController {
+
+    private CatalogueService catalogueService;
+
+    
+    public CatalogueController(CatalogueService catalogueService) {
+		super();
+		this.catalogueService = catalogueService;
+	}
+
+	@GetMapping
+    public ResponseEntity<List<Catalogue>> getAllOuvrages() {
+        return ResponseEntity.ok(catalogueService.getAllOuvrages());
+    }
+
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Catalogue> getOuvrageById(@PathVariable Long id) {
+//        return catalogueService.getOuvrageById(id)
+//                .map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.notFound().build());
+//    }
+
+    @GetMapping("/isbn/{isbn}")
+    public ResponseEntity<Catalogue> getOuvrageByIsbn(@PathVariable String isbn) {
+        return catalogueService.getOuvrageByIsbn(isbn)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<Catalogue> createOuvrage(@RequestBody Catalogue catalogue) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(catalogueService.saveOuvrage(catalogue));
+    }
+
+    @PutMapping("/{isbn}")
+    public ResponseEntity<Catalogue> updateOuvrage(@PathVariable String isbn, @RequestBody Catalogue catalogue) {
+        return catalogueService.getOuvrageByIsbn(isbn)
+                .map(existingOuvrage -> {
+                    catalogue.setIsbn(isbn);
+                    return ResponseEntity.ok(catalogueService.saveOuvrage(catalogue));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{isbn}")
+    public ResponseEntity<Void> deleteOuvrage(@PathVariable String isbn) {
+        catalogueService.deleteOuvrage(id);
+        return ResponseEntity.noContent().build();
+    }
+} 

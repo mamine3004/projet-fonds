@@ -3,13 +3,13 @@ package ma.isga.depot.entities;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "catalogue")
 public class Catalogue {
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
     private String isbn;
+    
     private String titre;
     private String auteur;
     private String editeur;
@@ -24,12 +24,6 @@ public class Catalogue {
 	}
 	public Catalogue() {
 		super();
-	}
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
 	}
 	public String getIsbn() {
 		return isbn;

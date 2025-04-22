@@ -36,9 +36,9 @@ public class FondController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/ouvrage/{ouvrageId}")
-    public ResponseEntity<Fond> getFondByOuvrage(@PathVariable Long ouvrageId) {
-        return catalogueService.getOuvrageById(ouvrageId)
+    @GetMapping("/ouvrage/{isbn}")
+    public ResponseEntity<Fond> getFondByOuvrage(@PathVariable String isbn) {
+        return catalogueService.getOuvrageByIsbn(isbn)
                 .flatMap(ouvrage -> fondService.getFondByOuvrage(ouvrage))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -51,11 +51,11 @@ public class FondController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Fond> updateFond(@PathVariable Long id, @RequestBody Fond fond) {
+    public ResponseEntity<Fond> updateFond(@PathVariable Long id, @RequestBody Integer fond) {
         return fondService.getFondById(id)
                 .map(existingFond -> {
-                    fond.setId(id);
-                    return ResponseEntity.ok(fondService.saveFond(fond));
+                    existingFond.setNombreExemplaires(fond);
+                    return ResponseEntity.ok(fondService.saveFond(existingFond));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -66,9 +66,9 @@ public class FondController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/disponible/{ouvrageId}")
-    public ResponseEntity<Boolean> isOuvrageDisponible(@PathVariable Long ouvrageId) {
-        return catalogueService.getOuvrageById(ouvrageId)
+    @GetMapping("/disponible/{isbn}")
+    public ResponseEntity<Boolean> isOuvrageDisponible(@PathVariable String isbn) {
+        return catalogueService.getOuvrageByIsbn(isbn)
                 .map(ouvrage -> ResponseEntity.ok(fondService.isOuvrageDisponible(ouvrage)))
                 .orElse(ResponseEntity.notFound().build());
     }

@@ -47,16 +47,16 @@ public class OperationController {
         return ResponseEntity.ok(operationService.getOperationsActivesByUsager(usagerId));
     }
 
-    @GetMapping("/ouvrage/{ouvrageId}")
-    public ResponseEntity<List<Operation>> getOperationsByOuvrage(@PathVariable Long ouvrageId) {
-        return catalogueService.getOuvrageById(ouvrageId)
+    @GetMapping("/ouvrage/{isbn}")
+    public ResponseEntity<List<Operation>> getOperationsByOuvrage(@PathVariable String isbn) {
+        return catalogueService.getOuvrageByIsbn(isbn)
                 .map(ouvrage -> ResponseEntity.ok(operationService.getOperationsByOuvrage(ouvrage)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/ouvrage/{ouvrageId}/actives")
-    public ResponseEntity<List<Operation>> getOperationsActivesByOuvrage(@PathVariable Long ouvrageId) {
-        return catalogueService.getOuvrageById(ouvrageId)
+    @GetMapping("/ouvrage/{isbn}/actives")
+    public ResponseEntity<List<Operation>> getOperationsActivesByOuvrage(@PathVariable String isbn) {
+        return catalogueService.getOuvrageByIsbn(isbn)
                 .map(ouvrage -> ResponseEntity.ok(operationService.getOperationsActivesByOuvrage(ouvrage)))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -64,9 +64,9 @@ public class OperationController {
     @PostMapping("/emprunter")
     public ResponseEntity<?> emprunterOuvrage(@RequestBody OperationDTO request) {
         Long usagerId = request.usagerId;
-        Long ouvrageId = request.ouvrageId;
+        String ouvrageId = request.ouvrageId;
         
-        return catalogueService.getOuvrageById(ouvrageId)
+        return catalogueService.getOuvrageByIsbn(ouvrageId)
                 .map(ouvrage -> {
                     Operation operation = operationService.emprunterOuvrage(usagerId, ouvrage);
                     if (operation != null) {
@@ -81,9 +81,9 @@ public class OperationController {
     @PostMapping("/reserver")
     public ResponseEntity<Operation> reserverOuvrage(@RequestBody OperationDTO request) {
         Long usagerId = request.usagerId;
-        Long ouvrageId = request.ouvrageId;
+        String ouvrageId = request.ouvrageId;
         
-        return catalogueService.getOuvrageById(ouvrageId)
+        return catalogueService.getOuvrageByIsbn(ouvrageId)
                 .map(ouvrage -> {
                     Operation operation = operationService.reserverOuvrage(usagerId, ouvrage);
                     return ResponseEntity.status(HttpStatus.CREATED).body(operation);

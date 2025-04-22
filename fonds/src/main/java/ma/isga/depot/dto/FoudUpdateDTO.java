@@ -1,0 +1,7 @@
+package ma.isga.depot.dto;
+
+public class FoudUpdateDTO {
+	
+	
+
+}
